@@ -1,9 +1,20 @@
 const router = require('express').Router();
 const User = require('../model/User');
+const Profile = require('../model/Profile');
 const bcrypt = require('bcryptjs');
-const {registerValidation} = require('./validation');
+const {registerValidation, loginValidation} = require('./validation');
 const jwt = require('jsonwebtoken');
 
+
+/*
+{
+    "firstname": "Pulkit",
+    "lastname": "Joshi",
+    "username": "pulkitj",
+    "email": "email.pulkitj@gmail.com",
+    "password": "iampulkit"
+}
+*/
 
 router.post('/register', async (req, res) =>
 {
@@ -11,19 +22,30 @@ router.post('/register', async (req, res) =>
     if(error) return res.status(400).send(error.details[0].message);
     // Check already exist
     const emailExist = await User.findOne({email: req.body.email});
-    if(emailExist) res.status(400).send("Email Exists")
-
+    const userExist = await User.findOne({username: req.body.username});
+    if(emailExist) return res.status(400).send("Email Exists")
+    if(userExist) return res.status(400).send("Username Exists")
     const salt = await bcrypt.genSalt(10);
     const hashPassword =  await bcrypt.hash(req.body.password, salt);
 
     const user = new User({
-        name: req.body.name,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        username: req.body.username,
         email: req.body.email,
-        password: hashPassword
+        password: hashPassword,
+        admin: true
     });
+    
     try{
         const savedUser = await user.save();
+        const profile = new Profile({
+            userid: savedUser._id,
+        });
+        const savedProfile = await profile.save();
+        console.log(savedProfile);
         res.send(savedUser);
+        
     }
     catch(err)
     {
@@ -31,10 +53,13 @@ router.post('/register', async (req, res) =>
     }
 });
 
+/*
+
+*/
 
 router.post('/login',async (req, res) =>
 {
-    const { error } = registerValidation(req.body);
+    const { error } = loginValidation(req.body);
     if(error) return res.status(400).send(error.details[0].message);
     const user = await User.findOne({email: req.body.email});
     if(!user) res.status(400).send("Email does not exist");

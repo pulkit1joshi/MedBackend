@@ -3,7 +3,8 @@ const app = express();
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const authRoute = require('./routes/auth');
-const postRoute = require('./routes/posts');
+const profileRoute = require('./routes/profile');
+const adminRoute = require('./routes/admin');
 
 // Connect database
 dotenv.config();
@@ -15,6 +16,8 @@ app.use(express.json());
 // Route MWares
 
 app.use('/api/user', authRoute);
-app.use('/api/posts', postRoute);
+app.use('/api/p/', profileRoute);
+app.use('/api/admin/', adminRoute);
+
 
 app.listen(3000, () =>console.log('Server is up and running'));
