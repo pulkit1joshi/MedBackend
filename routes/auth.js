@@ -8,11 +8,11 @@ const jwt = require('jsonwebtoken');
 
 /*
 {
-    "firstname": "Pulkit",
-    "lastname": "Joshi",
-    "username": "pulkitj",
-    "email": "email.pulkitj@gmail.com",
-    "password": "iampulkit"
+    "firstname": "name",
+    "lastname": "secname",
+    "username": "abcd",
+    "email": "email@gmail.com",
+    "password": "pass"
 }
 */
 
