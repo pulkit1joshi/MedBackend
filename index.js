@@ -18,6 +18,10 @@ app.use(express.json());
 app.use('/api/user', authRoute);
 app.use('/api/p/', profileRoute);
 app.use('/api/admin/', adminRoute);
+app.get('/', (req, res) =>
+{
+    res.sendStatus(200);
+});
 
 
-app.listen(3000, () =>console.log('Server is up and running'));
+app.listen(process.env.PORT || 3000, () =>console.log('Server is up and running'));
