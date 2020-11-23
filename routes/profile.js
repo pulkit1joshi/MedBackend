@@ -2,6 +2,7 @@
 const router = require('express').Router();
 const verify = require('./verifyToken');
 const Profile = require('../model/Profile');
+const User = require('../model/User');
 const {profileUpdateValidation} = require('./validation');
 
 router.get('/profile', verify, async (req, res) => {
@@ -12,6 +13,26 @@ router.get('/profile', verify, async (req, res) => {
     });
 })
 
+
+/* These are temprory will be removed later */
+// Reminder remove them //
+router.get('/profile/temp/:id', async (req, res) => {
+    const user = await User.findOne({username: req.param.id});
+    console.log(user);
+    res.json({
+        user
+    });
+})
+
+router.get('/profile/temp/profile/:id', async (req, res) => {
+    const user = await Profile.findOne({username: req.param.id});
+    console.log(user);
+    res.json({
+        user
+    });
+})
+
+// Reomove above codes
 
 
 router.post('/profile', verify, async (req, res) => {

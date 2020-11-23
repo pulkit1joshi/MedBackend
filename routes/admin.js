@@ -2,6 +2,30 @@ const router = require('express').Router();
 const verify = require('./verifyToken');
 const User = require('../model/User');
 
+router.get('/users', async (req, res) => {
+    User.find({}, (err, result) => {
+        if(err)
+        {
+            res.send(err);
+        }
+        else{
+            res.json(result);
+        }
+    })
+})
+
+router.get('/admins', async (req, res) => {
+    User.find({admin: true}, (err, result) => {
+        if(err)
+        {
+            res.send(err);
+        }
+        else{
+            res.json(result);
+        }
+    })
+})
+
 router.post('/add', verify, async (req, res) => {
     const adminCheck = await isAdmin(req.user._id);
     if(!adminCheck) 

@@ -13,6 +13,7 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopo
 });
 
 app.use(express.json());
+app.set('json spaces', 4)
 // Route MWares
 
 app.use('/api/user', authRoute);
