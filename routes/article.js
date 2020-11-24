@@ -52,7 +52,7 @@ router.post('/publish', verify, async (req, res) => {
         console.log(x);
         return x == req.user._id;
       }
-    if(!article.editorsids.find(checkEditor))
+    if(!await article.editorsids.find(checkEditor))
     {
         return res.json({
             "error": 404,
@@ -98,10 +98,10 @@ router.post('/modify/:id', verify, async (req, res) => {
             "body": "Not found 1"
         });
     }
-    if(article.editorsids.find(
+    if(!await article.editorsids.find(
         (x) =>
         {
-            return mongoose.Types.ObjectId(x) === mongoose.Types.ObjectId(req.user._id)
+            return mongoose.Types.ObjectId(x).equals(mongoose.Types.ObjectId(req.user._id));
         }
     ))
     {
@@ -138,10 +138,10 @@ router.get('/modify/:id', verify, async (req, res) => {
             "body": "Not found"
         });
     }
-    if(article.editorsids.find(
+    if(!await article.editorsids.find(
         (x) =>
         {
-            return mongoose.Types.ObjectId(x) === mongoose.Types.ObjectId(req.user._id)
+            return mongoose.Types.ObjectId(x).equals(mongoose.Types.ObjectId(req.user._id));
         }
     ))
     {
@@ -162,10 +162,10 @@ router.post('/remove/:id', verify, async (req, res) => {
             "body": "Not found"
         });
     }
-    if(article.editorsids.find(
+    if(!await article.editorsids.find(
         (x) =>
         {
-            return mongoose.Types.ObjectId(x) === mongoose.Types.ObjectId(req.user._id)
+            return mongoose.Types.ObjectId(x).equals(mongoose.Types.ObjectId(req.user._id));
         }
     ))
     {

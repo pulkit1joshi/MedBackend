@@ -6,6 +6,7 @@ const authRoute = require('./routes/auth');
 const profileRoute = require('./routes/profile');
 const adminRoute = require('./routes/admin');
 const articleRoute = require('./routes/article');
+const publicationRoute = require('./routes/publications');
 var cors = require('cors')
 app.use(cors()) // Use this after the variable declaration
 
@@ -23,6 +24,7 @@ app.use('/api/user', authRoute);
 app.use('/api/p/', profileRoute);
 app.use('/api/admin/', adminRoute);
 app.use('/api/article/', articleRoute);
+app.use('/api/publication/', publicationRoute);
 app.get('/', (req, res) =>
 {
     res.sendStatus(200);

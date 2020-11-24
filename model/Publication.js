@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 
 const publicationSchema = new mongoose.Schema({
+    name: {
+        type: mongoose.Schema.Types.String,
+        required: true
+    },
+    displayname: {
+        type: mongoose.Schema.Types.String,
+        required: true
+    },
     ownerid: {
         type: mongoose.Schema.Types.ObjectId
     },
@@ -21,14 +29,17 @@ const publicationSchema = new mongoose.Schema({
     postids: {
         type: [mongoose.Schema.Types.ObjectId]
     },
+    draftids: {
+        type: [mongoose.Schema.Types.ObjectId]
+    },
     image: {
-        type: String,
+        type: mongoose.Schema.Types.String,
     },
     theme: {
-        type: Number
+        type: mongoose.Schema.Types.Number
     },
     pages: {
-        type: [String]
+        type: [mongoose.Schema.Types.String]
     },
     pinnedPostids: {
         type: [mongoose.Schema.Types.ObjectId]

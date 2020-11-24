@@ -48,7 +48,27 @@ const articleCreateValidation = data => {
     return schema.validate(data);
 };
 
+const publicationCreateValidation = data => {
+    const schema = Joi.object({
+        name: Joi.string().min(10).required(),
+        displayname: Joi.string().min(10).required(),
+        ownerid: Joi.required(),
+        followerscount: Joi.required(),
+        writersids: Joi.array(),
+        editorsids: Joi.array(),
+        description: Joi.string().min(10).required(),
+        postids: Joi.array(),
+        draftids: Joi.array(),
+        image: Joi.string().min(10).required(),
+        theme: Joi.number(),
+        pages: Joi.number(),
+        pinnedPostids: Joi.array(),
+    });
+    return schema.validate(data);
+};
+
 module.exports.registerValidation = registerValidation;
 module.exports.articleCreateValidation = articleCreateValidation;
+module.exports.publicationCreateValidation = publicationCreateValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.profileUpdateValidation =  profileUpdateValidation;
