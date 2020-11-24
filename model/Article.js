@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const articleSchema = new mongoose.Schema({
+    published: {
+        type: Boolean,
+        default: false
+    },
     writerid: {
         type: mongoose.Schema.Types.ObjectId
     },
@@ -15,28 +19,30 @@ const articleSchema = new mongoose.Schema({
     editorsids: {
         type: [mongoose.Schema.Types.ObjectId]
     },
-    content: {
         title: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             max: 100,
             required: true
         },
         body: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             required: true
         },
         description: {
-            type: String,
+            type: mongoose.Schema.Types.String,
             max: 200,
         },
 
+    pid: {
+        type: mongoose.Schema.Types.ObjectId,
+        default: null
     },
     tagslist: {
-        type: [String],
+        type: [mongoose.Schema.Types.String],
         validate: [arrayLimit, '5 tags are only allowed']
     },
     imageUrl: {
-        type: String,
+        type: mongoose.Schema.Types.String,
         required: true
     }
 },{timestamps: true});

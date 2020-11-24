@@ -21,7 +21,7 @@ const loginValidation = data => {
 
 const profileUpdateValidation = data => {
     const schema = Joi.object({
-        userid: Joi.required,
+        userid: Joi.required(),
         about: Joi.string().min(8).required(),
         image: Joi.string().min(8).required(),
         gender: Joi.required(),
@@ -31,6 +31,24 @@ const profileUpdateValidation = data => {
     return schema.validate(data);
 };
 
+const articleCreateValidation = data => {
+    const schema = Joi.object({
+        published: Joi.boolean().required(),
+        writerid: Joi.required(),
+        claps: Joi.required(),
+        clapersIds: Joi.required(),
+        editorsids: Joi.required(),
+        pid: Joi.any(),
+        tagslist: Joi.array(),
+        imageUrl: Joi.required(),
+        body: Joi.string().min(100).required(),
+        title: Joi.string().min(10).required(),
+        description: Joi.string().min(10).required()
+    });
+    return schema.validate(data);
+};
+
 module.exports.registerValidation = registerValidation;
+module.exports.articleCreateValidation = articleCreateValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.profileUpdateValidation =  profileUpdateValidation;
