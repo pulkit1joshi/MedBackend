@@ -22,13 +22,13 @@ router.post('/register', async (req, res) =>
     if(error) 
     {
         res.statusMessage = error;
-        return res.status(400).end();
+        return res.status(404).end();
     }
     // Check already exist
     const emailExist = await User.findOne({email: req.body.email});
     const userExist = await User.findOne({username: req.body.username});
-    if(emailExist) return res.status(400).send("Email Exists")
-    if(userExist) return res.status(400).send("Username Exists")
+    if(emailExist) return res.status(404).send("Email Exists")
+    if(userExist) return res.status(404).send("Username Exists")
     const salt = await bcrypt.genSalt(10);
     const hashPassword =  await bcrypt.hash(req.body.password, salt);
 
@@ -53,7 +53,7 @@ router.post('/register', async (req, res) =>
     }
     catch(err)
     {
-        res.status(400).send(err);
+        res.status(404).send(err);
     }
 });
 
@@ -67,20 +67,20 @@ router.post('/login',async (req, res) =>
     if(error) 
     {
         res.statusMessage = error;
-        return res.status(400).end();
+        return res.status(404).end();
     }
     const user = await User.findOne({email: req.body.email});
     if(!user) 
     {
         res.statusMessage = "Email does not exist";
-        return res.status(400).end();
+        return res.status(404).end();
     }
 
     const validPass = await bcrypt.compare(req.body.password, user.password)
     if(!validPass) 
         {
             res.statusMessage = "Wrong password";
-            return res.status(400).end();
+            return res.status(404).end();
         }
     // Set Logged in Token
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);

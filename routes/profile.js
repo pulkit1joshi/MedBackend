@@ -23,7 +23,7 @@ router.post('/profile', verify, async (req, res) => {
     if(error) 
     {
         res.statusMessage = error;
-        return res.status(400).end();
+        return res.status(404).end();
     }
 
     try{
@@ -46,7 +46,7 @@ router.post('/profile', verify, async (req, res) => {
     catch(err)
     {
         res.statusMessage = error;
-        return res.status(400).end();
+        return res.status(404).end();
     }
     
 })
