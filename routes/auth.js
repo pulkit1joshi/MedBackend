@@ -19,7 +19,11 @@ const jwt = require('jsonwebtoken');
 router.post('/register', async (req, res) =>
 {
     const { error }= registerValidation(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
+    if(error) 
+    {
+        res.statusMessage = error;
+        return res.status(400).end();
+    }
     // Check already exist
     const emailExist = await User.findOne({email: req.body.email});
     const userExist = await User.findOne({username: req.body.username});
@@ -60,12 +64,24 @@ router.post('/register', async (req, res) =>
 router.post('/login',async (req, res) =>
 {
     const { error } = loginValidation(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
+    if(error) 
+    {
+        res.statusMessage = error;
+        return res.status(400).end();
+    }
     const user = await User.findOne({email: req.body.email});
-    if(!user) res.status(400).send("Email does not exist");
+    if(!user) 
+    {
+        res.statusMessage = "Email does not exist";
+        return res.status(400).end();
+    }
 
     const validPass = await bcrypt.compare(req.body.password, user.password)
-    if(!validPass) return res.status(400).send('Wrong password');
+    if(!validPass) 
+        {
+            res.statusMessage = "Wrong password";
+            return res.status(400).end();
+        }
     // Set Logged in Token
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);
     res.header('auth-token', token).send(token);

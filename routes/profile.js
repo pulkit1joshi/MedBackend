@@ -20,7 +20,11 @@ router.post('/profile', verify, async (req, res) => {
     if(!user) return res.send(404);
 
     const error = profileUpdateValidation(req.body);
-    if(error) return res.status(400).send(error);
+    if(error) 
+    {
+        res.statusMessage = error;
+        return res.status(400).end();
+    }
 
     try{
         const prof = await Profile.update(
@@ -41,7 +45,8 @@ router.post('/profile', verify, async (req, res) => {
     }
     catch(err)
     {
-        res.status(400).send(err);
+        res.statusMessage = error;
+        return res.status(400).end();
     }
     
 })
