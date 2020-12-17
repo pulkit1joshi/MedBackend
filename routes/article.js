@@ -20,7 +20,14 @@ router.post('/create', verify, async (req, res) => {
     };
     console.log(article);
     const { error }= articleCreateValidation(article);
-    if(error) return res.status(400).send(error.details);
+    if(error) 
+    {
+        out = {
+            error: true,
+            msg: error.details[0].message
+        };
+        return res.send(out);
+    }
     article = new Article( article );
     try{
         const result = await article.save();

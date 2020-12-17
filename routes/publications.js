@@ -25,7 +25,14 @@ router.post('/create', verify, async (req, res) => {
         
     };
     const { error }= publicationCreateValidation(publication);
-    if(error) return res.status(400).send(error.details);
+    if(error) 
+    {
+        out = {
+            error: true,
+            msg: error.details[0].message
+        };
+        return res.send(out);
+    }
     let publication2 = await Publication.findOne({name: req.body.name});
     if(publication2) 
     {

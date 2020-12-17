@@ -22,8 +22,11 @@ router.post('/profile', verify, async (req, res) => {
     const error = profileUpdateValidation(req.body);
     if(error) 
     {
-        res.statusMessage = error;
-        return res.status(404).end();
+        out = {
+            error: true,
+            msg: error.details[0].message
+        };
+        return res.send(out);
     }
 
     try{

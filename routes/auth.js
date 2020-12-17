@@ -19,11 +19,12 @@ const jwt = require('jsonwebtoken');
 router.post('/register', async (req, res) =>
 {
     const { error }= registerValidation(req.body);
+    console.log(error);
     if(error) 
     {
         out = {
             error: true,
-            msg: error[0].message
+            msg: error.details[0].message
         };
         return res.send(out);
     }
@@ -95,9 +96,8 @@ router.post('/login',async (req, res) =>
     {
         out = {
             error: true,
-            msg: error[0].message,
-        };
-       
+            msg: error.details[0].message
+        }
         return res.send(out);
     }
     const user = await User.findOne({email: req.body.email});
