@@ -66,7 +66,7 @@ router.post('/register', async (req, res) =>
         console.log(savedProfile);
         {
             out = {
-                error: true,
+                error: false,
                 data: savedUser
             };
 
@@ -123,7 +123,7 @@ router.post('/login',async (req, res) =>
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);
 
     out = {
-        error: true,
+        error: false,
         msg: {
             token: token,
         },
