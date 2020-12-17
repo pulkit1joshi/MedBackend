@@ -21,14 +21,30 @@ router.post('/register', async (req, res) =>
     const { error }= registerValidation(req.body);
     if(error) 
     {
-        res.statusMessage = error;
-        return res.status(404).end();
+        out = {
+            error: true,
+            msg: error
+        };
+        return res.send(out);
     }
     // Check already exist
     const emailExist = await User.findOne({email: req.body.email});
     const userExist = await User.findOne({username: req.body.username});
-    if(emailExist) return res.status(404).send("Email Exists")
-    if(userExist) return res.status(404).send("Username Exists")
+    if(emailExist) 
+    {
+        out = {
+            error: true,
+            msg: "Email already exists. Please login."
+        };
+        return res.send(out);
+    }
+    if(userExist) {
+        out = {
+            error: true,
+            msg: "Username already exists. Please login."
+        };
+        return res.send(out);
+    }
     const salt = await bcrypt.genSalt(10);
     const hashPassword =  await bcrypt.hash(req.body.password, salt);
 
@@ -48,12 +64,23 @@ router.post('/register', async (req, res) =>
         });
         const savedProfile = await profile.save();
         console.log(savedProfile);
-        res.send(savedUser);
+        {
+            out = {
+                error: true,
+                data: savedUser
+            };
+
+        }
+        res.send(out);
         
     }
     catch(err)
     {
-        res.status(404).send(err);
+            out = {
+                error: true,
+                msg: err
+            };
+            return res.send(out);
     }
 });
 
@@ -66,25 +93,42 @@ router.post('/login',async (req, res) =>
     const { error } = loginValidation(req.body);
     if(error) 
     {
-        res.statusMessage = error;
-        return res.status(404).end();
+        out = {
+            error: true,
+            msg: error
+        };
+       
+        return res.send(out);
     }
     const user = await User.findOne({email: req.body.email});
     if(!user) 
     {
-        res.statusMessage = "Email does not exist";
-        return res.status(404).end();
+        out = {
+            error: true,
+            msg: "Email doesn't exist"
+        };
+        return res.send(out);
     }
 
     const validPass = await bcrypt.compare(req.body.password, user.password)
     if(!validPass) 
         {
-            res.statusMessage = "Wrong password";
-            return res.status(404).end();
+            out = {
+                error: true,
+                msg: "Wrong password"
+            };
+            return res.send(out);
         }
     // Set Logged in Token
     const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET);
-    res.header('auth-token', token).send(token);
+
+    out = {
+        error: true,
+        msg: {
+            token: token,
+        },
+    };
+    res.header('auth-token', token).send(out);
 });
 
 module.exports = router;
