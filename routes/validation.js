@@ -21,15 +21,16 @@ const loginValidation = data => {
 
 const profileUpdateValidation = data => {
     const schema = Joi.object({
-        userid: Joi.required(),
-        about: Joi.string().min(8).required(),
-        image: Joi.string().min(8).required(),
+        about: Joi.string().min(3).required(),
+        image: Joi.string().min(3).required(),
         gender: Joi.required(),
         country: Joi.required(),
         interests: Joi.required(),
-        email: Joi.string().min(6).required().email(),
-        password: Joi.string().min(8).required(),
-        username: Joi.string().min(6).required(),
+        email: Joi.string().min(3).required().email(),
+        password: Joi.string().min(3).required(),
+        username: Joi.string().min(3).required(),
+        firstname: Joi.string().min(3).required(),
+        lastname: Joi.string().min(3).required(),
     });
     return schema.validate(data);
 };

@@ -58,14 +58,16 @@ router.post('/profile', verify, async (req, res) => {
     const user2 = await User.findOne({_id: req.user._id});
     if(!user) return res.send(404);
 
-    const error = profileUpdateValidation(req.body);
+    const { error } = profileUpdateValidation(req.body);
     if(error) 
     {
+    let out ={};
+
         out = {
             error: true,
-            msg: error.details[0].message
+            msg: error.error.validationError
         };
-        return res.send(out);
+        return res.send(error);
     }
 
     try{
@@ -80,33 +82,38 @@ router.post('/profile', verify, async (req, res) => {
                 "interests": req.body.interests
             }
             );
-            const validPass = await bcrypt.compare(req.body.password, user.password)
-        if(req.body.password == user2.password || validpass)
+            const validPass = await bcrypt.compare(req.body.password, user2.password);
+        if(req.body.password == user2.password || validPass)
         {
-         await User.update(
+        console.log(user2);
+         const out = await User.update(
                 {__id : req.user._id},
                 {
                     "email": req.body.email,
                     "username": req.body.username,
-                    "firstname": req.body.firstname,
+                    "firstname": "YOYO",
                     "lastname": req.body.lastname,
                 }
                 );
+                console.log(out);
         }
         else
         {
         const salt = await bcrypt.genSalt(10);
     	const hashPassword =  await bcrypt.hash(req.body.password, salt);
-        await User.update(
+    	console.log("YOOYY");
+    	console.log(req.body);
+        const out = await User.update(
                 {__id : req.user._id},
                 {
                     "email": req.body.email,
-                    "password": hashpassword,
+                    "password": hashPassword,
                     "username": req.body.username,
                     "firstname": req.body.firstname,
                     "lastname": req.body.lastname,
                 }
                 );
+                console.log(out);
         }
         res.json(
                 prof
@@ -114,8 +121,8 @@ router.post('/profile', verify, async (req, res) => {
     }
     catch(err)
     {
-        res.statusMessage = error;
-        return res.status(404).end();
+        res.statusMessage = err;
+        return res.send(err);
     }
     
 })
