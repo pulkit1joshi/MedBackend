@@ -4,6 +4,7 @@ const verify = require('./verifyToken');
 const Profile = require('../model/Profile');
 const User = require('../model/User');
 const {profileUpdateValidation} = require('./validation');
+const bcrypt = require('bcryptjs');
 
 router.get('/profile', verify, async (req, res) => {
     const user = await Profile.findOne({userid: req.user._id});
@@ -54,6 +55,7 @@ router.get('/find/email/:email', verify, async (req, res) => {
 router.post('/profile', verify, async (req, res) => {
     
     const user = await Profile.findOne({userid: req.user._id});
+    const user2 = await User.findOne({_id: req.user._id});
     if(!user) return res.send(404);
 
     const error = profileUpdateValidation(req.body);
@@ -78,17 +80,35 @@ router.post('/profile', verify, async (req, res) => {
                 "interests": req.body.interests
             }
             );
-        
+            const validPass = await bcrypt.compare(req.body.password, user.password)
+        if(req.body.password == user2.password || validpass)
+        {
+         await User.update(
+                {__id : req.user._id},
+                {
+                    "email": req.body.email,
+                    "username": req.body.username,
+                    "firstname": req.body.firstname,
+                    "lastname": req.body.lastname,
+                }
+                );
+        }
+        else
+        {
+        const salt = await bcrypt.genSalt(10);
+    	const hashPassword =  await bcrypt.hash(req.body.password, salt);
         await User.update(
                 {__id : req.user._id},
                 {
                     "email": req.body.email,
-                    "password": req.body.password,
+                    "password": hashpassword,
                     "username": req.body.username,
+                    "firstname": req.body.firstname,
+                    "lastname": req.body.lastname,
                 }
                 );
-
-            res.json(
+        }
+        res.json(
                 prof
             );
     }
