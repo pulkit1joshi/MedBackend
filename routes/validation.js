@@ -26,7 +26,10 @@ const profileUpdateValidation = data => {
         image: Joi.string().min(8).required(),
         gender: Joi.required(),
         country: Joi.required(),
-        interests: Joi.required()
+        interests: Joi.required(),
+        email: Joi.string().min(6).required().email(),
+        password: Joi.string().min(8).required(),
+        username: Joi.string().min(6).required(),
     });
     return schema.validate(data);
 };

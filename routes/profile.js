@@ -7,10 +7,47 @@ const {profileUpdateValidation} = require('./validation');
 
 router.get('/profile', verify, async (req, res) => {
     const user = await Profile.findOne({userid: req.user._id});
+    const user2 = await User.findOne({_id: req.user._id});
     console.log(user);
     res.json({
-        user
+        user,
+        user2
     });
+})
+
+router.get('/find/user/:username', verify, async (req, res) => {
+
+    const user = await User.findOne({username: req.params.username});
+    console.log(user);
+    if(user)
+    {
+    return res.json({
+        exists: true,
+    });
+    }
+    else
+    {
+        return res.json({
+            exists: false,
+        });
+    }
+})
+
+router.get('/find/email/:email', verify, async (req, res) => {
+    const user = await User.findOne({email: req.params.email});
+    console.log(user);
+    if(user)
+    {
+    return res.json({
+        exists: true,
+    });
+    }
+    else
+    {
+        return res.json({
+            exists: false,
+        });
+    }
 })
 
 
@@ -41,6 +78,15 @@ router.post('/profile', verify, async (req, res) => {
                 "interests": req.body.interests
             }
             );
+        
+        await User.update(
+                {__id : req.user._id},
+                {
+                    "email": req.body.email,
+                    "password": req.body.password,
+                    "username": req.body.username,
+                }
+                );
 
             res.json(
                 prof
