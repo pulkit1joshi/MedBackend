@@ -31,4 +31,4 @@ app.get('/', (req, res) =>
 });
 
 
-app.listen(process.env.PORT || 3001, () =>console.log('Server is up and running'));
+app.listen(process.env.PORT || 7001, () =>console.log('Server is up and running'));
