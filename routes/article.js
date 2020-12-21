@@ -6,16 +6,16 @@ const {articleCreateValidation} = require('./validation');
 
 router.post('/create', verify, async (req, res) => {
     let article  = {
-        published: false,
+        published: req.body.published,
         writerid: req.user._id,
-        claps: 0,
-        imageUrl: "try",
+        claps: req.body.claps,
+        imageUrl: req.body.imageUrl,
         body: req.body.body,
         title: req.body.title,
         description: req.body.description,
         clapersIds: [],
         editorsids: [req.user._id],
-        tagslist: []
+        tagslist: req.body.taglist
         
     };
     console.log(article);
@@ -89,7 +89,7 @@ router.get('/:id', async (req, res) => {
     console.log(article);
     if(article == null || article.published == false) {
         return res.json({
-            "error": 404,
+            "error": true,
             "body": "Not found"
         });
     }
