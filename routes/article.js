@@ -3,6 +3,10 @@ const verify = require('./verifyToken');
 const Article = require('../model/Article');
 const mongoose = require('mongoose');
 const {articleCreateValidation} = require('./validation');
+const User = require('../model/User');
+const Profile = require('../model/Profile');
+const Publication = require('../model/Publication');
+const { boolean } = require('@hapi/joi');
 
 router.post('/create', verify, async (req, res) => {
     let article  = {
@@ -18,7 +22,6 @@ router.post('/create', verify, async (req, res) => {
         tagslist: req.body.taglist
         
     };
-    console.log(article);
     const { error }= articleCreateValidation(article);
     if(error) 
     {
@@ -32,6 +35,7 @@ router.post('/create', verify, async (req, res) => {
     try{
         const result = await article.save();
         res.send(result);
+        console.log(result);
     }
     catch(err)
     {
@@ -85,15 +89,55 @@ router.post('/publish', verify, async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     const aid = mongoose.Types.ObjectId(req.params.id);
-    const article = await Article.findOne({_id: aid});
+    const article = await Article.findById(aid);
+    console.log("Article info",aid);
     console.log(article);
-    if(article == null || article.published == false) {
+    if(article == null) {
         return res.json({
             "error": true,
             "body": "Not found"
         });
     }
-    res.json(article);
+    const user = await User.findById(mongoose.Types.ObjectId(article.writerid));
+    const writer = {
+    firstname: user.firstname,
+    lastname: user.lastname,
+    
+    };
+    const profile = await Profile.findOne({userid: mongoose.Types.ObjectId(article.writerid)});
+    const prof = {
+    image: profile.image,
+    about: profile.about,
+    };
+    let publication = {};
+    if(!article.pid)
+    {
+    	publication = {
+    	exists: false
+    	}
+    }
+    else
+    {
+    	const publication = await Publication.findById(mongoose.Types.ObjectId(article.pid));
+    	publication = {
+    	name: publication.displayname,
+    	desc: publication.description,
+    	pid: publication._id,
+    	}
+    }
+    res.json({article, writer, prof, publication});
+})
+
+
+router.get('/list/:page', async (req, res) => {
+    console.log("List the articles");
+    const page_size = parseInt(process.env.PAGE_SIZE);
+    const page = parseInt(req.params.page || "0");
+    const total = await Article.countDocuments({});
+    console.log(total);
+    const articles = await Article.find({published: true},{published: 1,writerid: 1, imageUrl: 1, title: 1,description: 1,pid: 1, updatedAt: 1}).limit(page_size).skip(page_size * page);
+    console.log(articles);
+    return res.json({articles});
 })
 
 router.post('/modify/:id', verify, async (req, res) => {
