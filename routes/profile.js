@@ -16,6 +16,16 @@ router.get('/profile', verify, async (req, res) => {
     });
 })
 
+router.get('/profile/:id', async (req, res) => {
+    const user = await Profile.findOne({userid: req.params.id});
+    const user2 = await User.findOne({_id: req.params.id});
+    console.log(user);
+    res.json({
+        user,
+        user2
+    });
+})
+
 router.get('/find/user/:username', verify, async (req, res) => {
 
     const user = await User.findOne({username: req.params.username});
