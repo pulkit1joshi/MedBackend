@@ -140,6 +140,12 @@ router.get('/list/:page', async (req, res) => {
     return res.json({articles});
 })
 
+
+router.get('/user/:id', verify, async (req, res) => {
+    const articles = await Article.find({writerId: req.params.id},{published: 1,writerid: 1, imageUrl: 1, title: 1,description: 1,pid: 1, updatedAt: 1}).limit(page_size).skip(page_size * page);
+    return res.json({articles});
+})
+
 router.post('/modify/:id', verify, async (req, res) => {
     const aid =  mongoose.Types.ObjectId(req.params.id);
     const article = await Article.findOne({_id: aid});
