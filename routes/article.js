@@ -141,8 +141,8 @@ router.get('/list/:page', async (req, res) => {
 })
 
 
-router.get('/user/:id', verify, async (req, res) => {
-    const articles = await Article.find({writerId: req.params.id},{published: 1,writerid: 1, imageUrl: 1, title: 1,description: 1,pid: 1, updatedAt: 1}).limit(page_size).skip(page_size * page);
+router.get('/user/:id', async (req, res) => {
+    const articles = await Article.find({writerid: mongoose.Types.ObjectId(req.params.id)},{published: 1,writerid: 1, imageUrl: 1, title: 1,description: 1,pid: 1, updatedAt: 1, body: 1});
     return res.json({articles});
 })
 
