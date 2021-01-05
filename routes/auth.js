@@ -55,13 +55,14 @@ router.post('/register', async (req, res) =>
         username: req.body.username,
         email: req.body.email,
         password: hashPassword,
-        admin: true
+        admin: false,
     });
     
     try{
         const savedUser = await user.save();
         const profile = new Profile({
             userid: savedUser._id,
+            image: "https://d11a6trkgmumsb.cloudfront.net/original/3X/d/8/d8b5d0a738295345ebd8934b859fa1fca1c8c6ad.jpeg"
         });
         const savedProfile = await profile.save();
         console.log(savedProfile);

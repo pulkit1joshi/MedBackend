@@ -146,6 +146,20 @@ router.get('/user/:id', async (req, res) => {
     return res.json({articles});
 })
 
+/*
+router.post('/clap/:id', verify ,async (req, res) => {
+    const article = await Article.find({_id: mongoose.Types.ObjectId(req.params.id)});
+    if(article==null) 
+    {
+    	return res.json({
+            "error": 404,
+            "body": "Article not found"
+        });
+    }
+    
+    aritcle.clapersIds.
+})*/
+
 router.post('/modify/:id', verify, async (req, res) => {
     const aid =  mongoose.Types.ObjectId(req.params.id);
     const article = await Article.findOne({_id: aid});
