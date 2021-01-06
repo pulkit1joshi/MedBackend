@@ -51,6 +51,14 @@ router.post('/publish', verify, async (req, res) => {
             "body": "Article ID is invalid or not existing"
         });
     }
+
+    if(!mongoose.isValidObjectId(aid))
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Invalid ID"
+        });
+    }
     const article = await Article.findOne({_id: aid});
     console.log(article);
     if(!article) {
@@ -88,6 +96,20 @@ router.post('/publish', verify, async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
+    if(!req.params.id)
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Id cannot be empty"
+        });
+    }
+    if(!mongoose.isValidObjectId(req.params.id))
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Invalid ID"
+        });
+    }
     const aid = mongoose.Types.ObjectId(req.params.id);
     const article = await Article.findById(aid);
     console.log("Article info",aid);
@@ -142,12 +164,40 @@ router.get('/list/:page', async (req, res) => {
 
 
 router.get('/user/:id', async (req, res) => {
+    if(!req.params.id)
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Id cannot be empty"
+        });
+    }
+    if(!mongoose.isValidObjectId(req.params.id))
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Invalid ID"
+        });
+    }
     const articles = await Article.find({writerid: mongoose.Types.ObjectId(req.params.id)},{published: 1,writerid: 1, imageUrl: 1, title: 1,description: 1,pid: 1, updatedAt: 1, body: 1});
     return res.json({articles});
 })
 
-/*
+
 router.post('/clap/:id', verify ,async (req, res) => {
+    if(!req.params.id)
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Id cannot be empty"
+        });
+    }
+    if(!mongoose.isValidObjectId(req.params.id))
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Invalid ID"
+        });
+    }
     const article = await Article.find({_id: mongoose.Types.ObjectId(req.params.id)});
     if(article==null) 
     {
@@ -156,11 +206,85 @@ router.post('/clap/:id', verify ,async (req, res) => {
             "body": "Article not found"
         });
     }
-    
-    aritcle.clapersIds.
-})*/
+    let clapersIds = Array.from(article[0].clapersIds);
+    console.log(clapersIds);
+    console.log(clapersIds[0]);
+    if(clapersIds.find((id) => { return id==req.user._id }))
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Already clapped"
+        });
+    }
+    clapersIds.push(req.user._id);
+    article[0].clapersIds = clapersIds;
+    try{
+        const article1 = await Article.update(
+            {_id : mongoose.Types.ObjectId(req.params.id)},
+            article[0]
+            );
+
+            res.json({
+                article1
+            });
+    }
+    catch(err)
+    {
+    console.log(err);
+        res.status(400).send(err);
+    }
+})
+
+
+router.get('/getclaps/:id',async (req, res) => {
+    if(!req.params.id)
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Id cannot be empty"
+        });
+    }
+    if(!mongoose.isValidObjectId(req.params.id))
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Invalid ID"
+        });
+    }
+    const article = await Article.find({_id: mongoose.Types.ObjectId(req.params.id)});
+    if(article==null) 
+    {
+    	return res.json({
+            "error": 404,
+            "body": "Article not found"
+        });
+    }
+    try{
+
+            res.json({claps: article[0].clapersIds.length});
+    }
+    catch(err)
+    {
+    console.log(err);
+        res.status(400).send(err);
+    }
+})
 
 router.post('/modify/:id', verify, async (req, res) => {
+    if(!req.params.id)
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Id cannot be empty"
+        });
+    }
+    if(!mongoose.isValidObjectId(req.params.id))
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Invalid ID"
+        });
+    }
     const aid =  mongoose.Types.ObjectId(req.params.id);
     const article = await Article.findOne({_id: aid});
     if(article == null || article.published === false) {
@@ -201,6 +325,20 @@ router.post('/modify/:id', verify, async (req, res) => {
 })
 
 router.get('/modify/:id', verify, async (req, res) => {
+    if(!req.params.id)
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Id cannot be empty"
+        });
+    }
+    if(!mongoose.isValidObjectId(req.params.id))
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Invalid ID"
+        });
+    }
     const aid = mongoose.Types.ObjectId(req.params.id);
     const article = await Article.findOne({_id: aid});
     if(article == null || article.published == false) {
@@ -225,6 +363,20 @@ router.get('/modify/:id', verify, async (req, res) => {
 })
 
 router.post('/remove/:id', verify, async (req, res) => {
+    if(!req.params.id)
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Id cannot be empty"
+        });
+    }
+    if(!mongoose.isValidObjectId(req.params.id))
+    {
+    	return res.json({
+            "error": 500,
+            "body": "Invalid ID"
+        });
+    }
     const aid = mongoose.Types.ObjectId(req.params.id);
     const article = await Article.findOne({_id: aid});
     if(article == null || article.published == false) {
